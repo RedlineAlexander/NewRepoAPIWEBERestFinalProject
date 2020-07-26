@@ -13,6 +13,10 @@ using Microsoft.Extensions.Hosting;
 using NewRepoAPIWEBERestFinalProject.Models;
 using NewRepoAPIWEBERestFinalProject.Models.Repositories;
 using Microsoft.EntityFrameworkCore;
+using NewRepoAPIWEBERestFinalProject.Middlewares;
+using NewRepoAPIWEBERestFinalProject.Services.Interfaces;
+using NewRepoAPIWEBERestFinalProject.Services.Implementations;
+using NewRepoAPIWEBERestFinalProject.Configuration;
 
 namespace NewRepoAPIWEBERestFinalProject
 {
@@ -33,7 +37,8 @@ namespace NewRepoAPIWEBERestFinalProject
             services.AddScoped<IPatientsRepository, SqlPatientsRepository>();
             services.AddScoped<IServicesRepository, SqlServicesRepository>();
             services.AddScoped<IOrdersRepository, SqlOrdersRepository>();
-
+            services.AddScoped<IMessageService<Email>, EmailMessageService>();
+            //services.AddScoped<IMessageService<Sms>, SmsMessageService>();
             //DbContext
             services.AddDbContext<NewRepoAPIWEBRestFinalProjectContext>(builder => builder.UseSqlServer(_configuration.GetConnectionString("NewRepoAPIWEBRestFinalProjectDbConnectionNew")).UseLazyLoadingProxies());
 
@@ -48,6 +53,22 @@ namespace NewRepoAPIWEBERestFinalProject
                 options.Password.RequiredLength = 3;
                 options.Password.RequiredUniqueChars = 1;
             });
+
+            services.AddMemoryCache();
+            // services.AddHostedService<LoadFileService>();
+            //services.AddHostedService<UploadFileService>();
+
+            var section = _configuration.GetSection("NewNewRepoAPIWEBRestFinalProject");
+            services.Configure<NewRepoAPIWEBERestFinalProjectConfiguration>(section);
+
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.MaxRequestBodySize = int.MaxValue;
+            }
+            );
+
+      
+
             services.AddControllersWithViews();
         }
 
@@ -64,9 +85,10 @@ namespace NewRepoAPIWEBERestFinalProject
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseWriteToConsole("Middleware 1");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseWriteToConsole("Middleware 2");
             app.UseRouting();
 
             app.UseAuthentication();
