@@ -1,5 +1,28 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model List<Patients>
+
+    <table class="table" style="text-align: center">
+        <tr>
+            <th>PatientId</th>
+            <th>PatientName</th>
+            <th>PatientBirthDate</th>
+            <th>PatientsSexRef</th>
+            
+        </tr>
+        @foreach (var patients in Model)
+        {
+            <tr>
+                <td>@patients.PatientID</td>
+                <td>@patients.PatientName</td>
+                <td>@patients.PatientBirthDate</td>
+                <td>@patients.PatientSexRef</td>
+                
+                
+            </tr>
+        }
+    </table>
+
 @{
 }
