@@ -6,9 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Services\Implemetations\" />
-    <Folder Include="Views\Orders\" />
-    <Folder Include="Views\Patients\" />
-    <Folder Include="Views\Services\" />
   </ItemGroup>
 
   <ItemGroup>
